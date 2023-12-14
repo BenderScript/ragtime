@@ -1,4 +1,3 @@
-
 # Introduction to Retrieval-Augmented Generation (RAG) using Langchain
 
 ## Dive into the Future of AI with RAG!
@@ -20,6 +19,9 @@ Welcome to the groundbreaking course on Retrieval-Augmented Generation (RAG) usi
 3. **RAG Concepts and Applications**
    - Understanding RAG
    - Project: Building a RAG application
+
+### Detailed Course Outline
+For a comprehensive overview of the course, check out the [Course Details](ragtime.md).
 
 ### Who Is This Course For?
 - AI Enthusiasts
