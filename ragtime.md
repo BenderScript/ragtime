@@ -7,10 +7,70 @@ This course introduces Retrieval-Augmented Generation (RAG) using Langchain, ble
 ## Modules
 
 ### Module 1: Introduction to Generative AI
-#### Theory
-- Overview of generative AI models and their evolution.
-#### Practical
-- Simple text generation using OpenAI's model.
+
+#### Theory: Overview of Generative AI Models and Their Evolution
+
+**1. Understanding Generative AI**:
+   - **Definition**: Exploring what generative AI is, including its ability to create new content and make predictions based on learned data patterns.
+   - **Key Concepts**: Discussing concepts such as supervised vs. unsupervised learning, neural networks, and deep learning as they pertain to generative AI.
+
+**2. Historical Context and Evolution**:
+   - **Early Beginnings**: Tracing the origins of generative AI, from basic neural networks to more complex architectures.
+   - **Milestones**: Reviewing key developments like GANs (Generative Adversarial Networks), transformer models, and breakthroughs like GPT (Generative Pre-trained Transformer) series and BERT (Bidirectional Encoder Representations from Transformers).
+
+**3. Types of Generative AI Models**:
+   - **Varieties and Uses**: Exploring different types of generative models, including GANs, VAEs (Variational Autoencoders), and language models like GPT and BERT.
+   - **Applications**: Discussing how these models are used in various fields such as art, music, text generation, and more.
+
+**4. Ethical Considerations**:
+   - **Responsibility**: Understanding the ethical implications of generative AI, including concerns about bias, misinformation, and the impact on digital content authenticity.
+
+#### Practical: Simple Text Generation using OpenAI's Model
+
+**Objective**: Introduce students to practical usage of generative AI with a focus on text generation using OpenAI's GPT model.
+
+**Environment Setup**:
+- Python environment.
+- Langchain installed.
+- Access to OpenAI API.
+
+**Example: Generating Text with OpenAI's GPT Model**
+
+```python
+from dotenv import load_dotenv
+import os
+from langchain.llms import OpenAI
+
+
+def generate_text(prompt, model):
+    # Generate a response using the language model
+    return model.generate(prompts=[prompt], max_tokens=4000)
+
+
+def main():
+    # Load environment variables
+    load_dotenv()
+
+    # Retrieve the API key
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    # Initialize OpenAI's language model with the API key
+    llm = OpenAI(api_key=api_key)
+
+    # Example text generation
+    prompt = "Write a short story about Bender from Futurama in first person using his language and mannerisms"
+    print("Generated Text:", generate_text(prompt, llm))
+
+
+main()
+```
+
+In this module, students will:
+- Gain an understanding of generative AI, its history, and the different types of models.
+- Learn about the practical applications and ethical considerations of generative AI.
+- Get hands-on experience with text generation using OpenAI's GPT model.
+
+This module sets the foundation for understanding generative AI, paving the way for more advanced topics and practical implementations in subsequent modules.
 
 ---
 
