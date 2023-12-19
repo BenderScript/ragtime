@@ -1,6 +1,8 @@
+import os
 import re
 import sys
 from io import StringIO
+from autopep8 import fix_code
 
 
 # Function to extract code blocks from Markdown
@@ -12,6 +14,12 @@ def extract_code_blocks(markdown_text):
 def clean_code(code):
     # Remove comments and empty lines
     return "\n".join(line for line in code.split("\n") if line.strip() and not line.strip().startswith("#"))
+
+
+# Function to save code block to a file
+def save_code_block(code, file_name):
+    with open(file_name, 'w') as file:
+        file.write(code)
 
 
 # Function to execute code and capture output
@@ -55,11 +63,21 @@ def process_markdown_file(file_path):
     # Parse the Markdown and extract code blocks with language specifier
     code_blocks = extract_code_blocks(markdown_text)
 
+    # Ensure the 'examples' directory exists
+    if not os.path.exists('examples'):
+        os.makedirs('examples')
+
     # Execute and report on each code block
     for i, code in enumerate(code_blocks, start=1):
         print(f"Code block {i}:\n")
         print(code)  # Print the code to be executed
         print("\nExecuting...\n")
+
+        # Format the code according to PEP 8
+        formatted_code = fix_code(code)
+
+        file_name = f'examples/code_block_{i}.py'
+        save_code_block(formatted_code, file_name)
 
         success, output, error_message = execute_code(code)
 

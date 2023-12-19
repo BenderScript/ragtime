@@ -38,6 +38,14 @@ cd [repo-name]
 # follow setup instructions
 ```
 
+### Extracting Code Examples from Markdown
+
+the command below will run and extract all code blocks from the markdown files and save them in the `examples` directory.
+
+```bash
+python3 markdown_test.py
+```
+
 ### Join the AI Revolution with RAG!
 Enroll now and be a part of the community shaping the future of AI with Retrieval-Augmented Generation. Let's explore the uncharted territories of AI together!
 
