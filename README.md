@@ -40,7 +40,7 @@ cd [repo-name]
 
 ### Extracting Code Examples from Markdown
 
-the command below will run and extract all code blocks from the markdown files and save them in the `examples` directory.
+The command below will run and extract all code blocks from markdown files and save them in the `examples` directory.
 
 ```bash
 python3 markdown_test.py
