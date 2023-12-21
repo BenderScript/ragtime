@@ -229,7 +229,7 @@ def main():
     response = generate_text(llm, prompt)
 
     # Output the response
-    print("Generated Text:", response)
+    print("Generated Text:", response.generations[0][0].text)
 
 main()
 
@@ -237,10 +237,34 @@ main()
 ---
 
 ### Module 5: Implementing Retrieval with Langchain
-#### Theory
-- Deep dive into retrieval mechanics within Langchain.
-#### Practical
-- Building a retrieval system using Langchain's `LocalRetriever`.
+
+#### Theory: Deep Dive into Retrieval Mechanics within Langchain
+
+**1. Retrieval in AI Systems**:
+   - Retrieval systems in AI are designed to search for and provide relevant information in response to a query.
+   - Key components include:
+     - **Indexing**: Organizing data in a way that facilitates fast and efficient retrieval.
+     - **Query Processing**: Interpreting the user's query and converting it into a format suitable for retrieval.
+     - **Ranking Algorithms**: Methods to rank the retrieved information based on relevance to the query.
+
+**2. Langchain's Retrieval Tools**:
+   - Langchain offers tools for integrating retrieval systems, including support for Elasticsearch and custom retrievers.
+   - Custom retrievers in Langchain allow for tailored retrieval logic, which can be optimized for specific datasets or applications.
+
+**3. Real-World Applications**:
+   - Retrieval systems are crucial in search engines, where they retrieve web pages relevant to user queries.
+   - In recommendation systems, retrieval systems help in suggesting relevant items to users based on their interests or past behavior.
+   - In question-answering systems, they fetch information that forms the basis of the answer.
+
+**4. Efficiency and Scalability**:
+   - Efficient retrieval systems minimize response time and resource usage, essential in large-scale applications.
+   - Scalability ensures that the system can handle growing data and user base without a significant drop in performance.
+
+#### Practical: Building a Retrieval System using Langchain's Custom Retrieval Logic
+
+**Objective**: Implement a custom retrieval system and integrate it with Langchain and OpenAI's GPT model.
+
+**Example: Custom Retrieval System with Language Model Integration**
 
 ```python
 from dotenv import load_dotenv
@@ -253,44 +277,35 @@ load_dotenv()
 # Retrieve the API key
 api_key = os.getenv("OPENAI_API_KEY")
 
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
+def custom_retrieval(query, document_dict):
+    # Basic keyword-based retrieval logic
+    query = query.lower()
+    for title, content in document_dict.items():
+        if title in query:
+            return content
+    return "Information on this topic is not available."
 
-# Sample documents for a basic retrieval system
-documents = {
-    "python programming": "Python is a high-level, interpreted programming language known for its readability.",
-    "langchain framework": "Langchain is a framework that facilitates the use of language models in various applications."
-}
-
-# Simple retrieval function
-def retrieve(query, doc_dict):
-    for key, value in doc_dict.items():
-        if key in query.lower():
-            return value
-    return "Relevant information not found."
-
-# Function to generate a response using retrieved information
-def generate_response_with_retrieval(prompt, doc_dict, language_model):
-    # Retrieve relevant information based on the prompt
-    retrieved_info = retrieve(prompt, doc_dict)
-    
-    # Combine the prompt with the retrieved information
-    combined_input = f"{prompt}\n\nRetrieved Info: {retrieved_info}"
-    
-    # Generate response using the language model
-    return language_model.generate(prompts=[combined_input])
-
+def generate_response_with_retrieval(prompt, document_dict, language_model):
+    # Retrieve information and generate a response
+    retrieved_info = custom_retrieval(prompt, document_dict)
+    combined_input = f"Query: {prompt}\nRetrieved Information: {retrieved_info}"
+    return language_model.generate(prompts=[combined_input], max_tokens=100)[0].text
 
 def main():
-# Generate a response
-    prompt = "Tell me about the Langchain framework."
+    llm = OpenAI(api_key=api_key)
+
+    # Document database
+    documents = {
+        "python programming": "Python is a versatile language used in many fields.",
+        "langchain framework": "Langchain simplifies AI and language model integration in applications."
+    }
+
+    prompt = "Tell me about Python programming."
     response = generate_response_with_retrieval(prompt, documents, llm)
 
-    print("Response with Retrieved Information:", response)
+    print("Generated Text:", response)
 
 main()
-
-
 ```
 
 ---
@@ -329,58 +344,75 @@ main()
    - **Support**: Langchain's growing community and ecosystem offer resources, examples, and support, which can be invaluable for developers working on RAG systems.
    - **Benefit**: Access to shared knowledge and solutions helps accelerate development and problem-solving.
 
-In summary, Langchain's design and features make it an ideal framework for developers looking to explore and implement RAG systems. Its modular architecture, support for various language models and retrieval mechanisms, and focus on ease of integration, scalability, and community support, provide a robust foundation for building sophisticated AI applications.#### Practical
-- Implementing a basic RAG model using Langchain.
+In summary, Langchain's design and features make it an ideal framework for developers looking to explore and implement RAG systems. Its modular architecture, support for various language models and retrieval mechanisms, and focus on ease of integration, scalability, and community support, provide a robust foundation for building sophisticated AI applications.
+
+#### Practical: Implementing a RAG-Like Model Using Langchain
+
+**Objective**: In this practical example, we'll simulate a RAG system where the retrieval process is based on matching the context and content of a query to a set of documents. We'll then use this retrieved context to inform the generation of a response from the language model.
 
 ```python
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
-# Load environment variables
-load_dotenv()
-
-# Retrieve the API key
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
-
-# Sample documents for a basic retrieval system
-documents = {
-    "machine learning": "Machine learning is a type of artificial intelligence that allows software applications to become more accurate at predicting outcomes without being explicitly programmed to do so.",
-    "python programming": "Python is a popular programming language for machine learning due to its simplicity and versatility."
-}
-
-# Simple retrieval function
-def retrieve(query, doc_dict):
-    for key, value in doc_dict.items():
-        if key in query.lower():
-            return value
-    return "Relevant information not found."
-
-# Function to generate a response using retrieved information
-def generate_response_with_retrieval(prompt, doc_dict, language_model):
-    # Retrieve relevant information based on the prompt
-    retrieved_info = retrieve(prompt, doc_dict)
-    
-    # Combine the prompt with the retrieved information
-    combined_input = f"{prompt}\n\nAdditional Info: {retrieved_info}"
-    
-    # Generate response using the language model
-    return language_model.generate(prompts=[combined_input])
 
 def main():
-    # Generate a response
-    prompt = "Explain machine learning and its relation to Python."
-    response = generate_response_with_retrieval(prompt, documents, llm)
+    # Load environment variables
+    load_dotenv()
 
-    print("Response with Retrieved Information:", response)
+    # Retrieve the API key
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    # Initialize OpenAI's language model with the API key
+    llm = OpenAI(api_key=api_key)
+
+    # Document database for contextual retrieval
+    documents = {
+        "machine learning": "Machine learning is a type of artificial intelligence that allows software applications "
+                            "to become more accurate at predicting outcomes without being explicitly programmed to do "
+                            "so.",
+        "python programming": "Python is a popular programming language for machine learning due to its simplicity "
+                              "and versatility."
+        # Additional documents can be added here
+    }
+
+    # Contextual retrieval function
+    def contextual_retrieve(query_text, doc_dict):
+        # Extract context from the query
+        context = query_text.lower()
+
+        # Find the most relevant document based on the context
+        best_match = None
+        best_match_score = 0  # Simple score based on keyword overlap
+
+        for key, content in doc_dict.items():
+            match_score = sum(word in content.lower() for word in context.split())
+            if match_score > best_match_score:
+                best_match = content
+                best_match_score = match_score
+
+        return best_match if best_match else "Relevant information not found."
+
+    # Function to generate a response using RAG-like process
+    def generate_rag_response(query_text, doc_dict, language_model):
+        # Retrieve contextually relevant information
+        context = contextual_retrieve(query_text, doc_dict)
+
+        # Combine the query text with the retrieved information
+        combined_input = f"Query: {query_text}\n\nContext: {context}"
+
+        # Generate response using the language model
+        return language_model.generate(prompts=[combined_input], max_tokens=100)[0].text
+
+    # Example query and response generation
+    example_query = "Explain machine learning and its relation to Python."
+    response = generate_rag_response(example_query, documents, llm)
+
+    print("RAG-Like Response:", response)
 
 
-main()
-
-
+if __name__ == "__main__":
+    main()
 
 ```
 ---
