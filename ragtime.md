@@ -876,45 +876,67 @@ main()
 - Combine retrieved information with OpenAI's language models to generate responses.
 - Demonstrate understanding and practical application of advanced RAG concepts, including performance optimization, handling large data sets, and ensuring response quality.
 
+Addind mulk#### Practical: Building an Advanced Multi-modal System
 
-#### Practical: Building an Advanced Question-Answering System
+**Objective**: Create a RAG system that provides comprehensive information about historical events by integrating text descriptions, relevant images, and structured data such as dates and key figures.
 
 **Environment Setup**:
 - Python environment with Langchain installed.
 - Access to OpenAI API.
 
-**Example: Advanced Question-Answering System Using RAG Principles**
+**Example: Multimodal Historical Event Explorer**
 
 ```python
-from dotenv import load_dotenv
 import os
+import requests
+from PIL import Image, UnidentifiedImageError
+from io import BytesIO
+
+from dotenv import load_dotenv
 from langchain.llms import OpenAI
 
 
-class AdvancedDocumentRetriever:
-    def __init__(self, primary_docs, secondary_docs):
-        self.primary_docs = primary_docs
-        self.secondary_docs = secondary_docs
+class HistoricalEventExplorer:
+    def __init__(self, text_data, image_links, structured_data, language_model):
+        self.text_data = text_data
+        self.image_links = image_links
+        self.structured_data = structured_data
+        self.language_model = language_model
 
-    def retrieve(self, query):
-        # Improved retrieval for partial matches or keywords
-        combined_content = ""
-        for docs in [self.primary_docs, self.secondary_docs]:
-            for key, content in docs.items():
-                if any(word in query.lower() for word in key.lower().split()):
-                    combined_content += f"{content}\n"
-        return combined_content.strip() if combined_content else "Content not found."
+    def get_event_info(self, event_name):
+        description = self.text_data.get(event_name, "No description available.")
+        image_link = self.image_links.get(event_name)
+        structured_info = self.structured_data.get(event_name, "No structured data available.")
 
+        image = self._fetch_and_process_image(image_link) if image_link else "No image available."
 
-def answer_complex_query(query, retriever, language_model):
-    # Retrieve relevant document
-    document = retriever.retrieve(query)
+        # Generate additional info using OpenAI
+        additional_info = self.generate_additional_info(event_name, description, structured_info)
 
-    if document == "Content not found.":
-        return "I'm sorry, I don't have detailed information on that topic."
+        return description, image, structured_info, additional_info
 
-    answer_prompt = f"Answer the question based on the following information: {document}\n\nQuestion: {query}"
-    return language_model.generate(prompts=[answer_prompt], max_tokens=200).generations[0][0].text
+    def _fetch_and_process_image(self, url):
+        headers = {'User-Agent': 'MyApp/1.0 (myemail@example.com)'}  # Replace with your app name and email
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+
+            image = Image.open(BytesIO(response.content))
+            image = image.resize((300, 300))
+            return image
+
+        except requests.RequestException as e:
+            print(f"Request error: {e}")
+        except UnidentifiedImageError as e:
+            print(f"Image processing error: {e}")
+
+        return "Error in fetching or processing image."
+
+    def generate_additional_info(self, event_name, description, structured_info):
+        prompt = f"Write a brief commentary about the event '{event_name}': {description}. Details: {structured_info}."
+        response = self.language_model.generate(prompts=[prompt], max_tokens=1000).generations[0][0].text
+        return response
 
 
 def main():
@@ -922,21 +944,30 @@ def main():
     api_key = os.getenv("OPENAI_API_KEY")
     llm = OpenAI(api_key=api_key)
 
-    primary_documents = {
-        "Python programming": "Python is a versatile language used in various fields.",
-        "Machine learning": "Machine learning involves algorithms and statistical models."
+    text_data = {
+        "Moon Landing": "The Apollo 11 mission, in 1969, marked the first time humans landed on the Moon."
     }
-    secondary_documents = {
-        "Python applications": "Python is widely used in web development, data analysis, AI, and more.",
-        "AI in machine learning": "AI and machine learning are closely intertwined, with AI providing a broader context."
+    image_links = {
+        "Moon Landing": "https://history.nasa.gov/alsj/a11/AS11-40-5903HR.jpg"
+    }
+    structured_data = {
+        "Moon Landing": {"Date": "July 20, 1969", "Key Figures": ["Neil Armstrong", "Buzz Aldrin", "Michael Collins"]}
     }
 
-    retriever = AdvancedDocumentRetriever(primary_documents, secondary_documents)
+    explorer = HistoricalEventExplorer(text_data, image_links, structured_data, llm)
 
-    query = "How is Python used in machine learning?"
-    response = answer_complex_query(query, retriever, llm)
+    event_name = "Moon Landing"
+    description, image, structured_info, additional_info = explorer.get_event_info(event_name)
+    print(description)
+    print(structured_info)
+    print("AI Generated Commentary:", additional_info)
 
-    print("Advanced Response:", response)
+    if isinstance(image, Image.Image):
+        image.show()
+    else:
+        print(image)
+
+
 
 main()
 
