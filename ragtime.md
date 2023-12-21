@@ -725,6 +725,142 @@ main()
 
 ```
 
+#### Practical: Time-Sensitive Retrieval in RAG Systems
+
+**Objective**: Demonstrate an optimization technique in a RAG system where the retrieval component is designed to prioritize newer documents in a large corpus based on their timestamps.
+
+**Environment Setup**:
+- Python environment with Langchain installed.
+- Access to OpenAI API.
+
+**Example: Optimized Time-Sensitive Retrieval in RAG System**
+
+```python
+import datetime
+from dotenv import load_dotenv
+import os
+from langchain.llms import OpenAI
+
+
+class TimeSensitiveRetriever:
+    def __init__(self, documents_with_timestamps):
+        self.documents = documents_with_timestamps
+
+    def retrieve_recent_document(self, query):
+        query_keywords = set(query.lower().split())
+        relevant_docs = []
+        for doc in self.documents:
+            doc_keywords = set(doc['content'].lower().split())
+            if query_keywords & doc_keywords:  # Check for keyword overlap
+                relevant_docs.append(doc)
+
+        if not relevant_docs:
+            return "No relevant document found."
+
+        relevant_docs.sort(key=lambda doc: doc['timestamp'], reverse=True)
+        return relevant_docs[0]['content']
+
+
+def generate_response_with_recent_info(query, retriever, language_model):
+    retrieved_content = retriever.retrieve_recent_document(query)
+    combined_input = f"Query: {query}\nRecent Info: {retrieved_content}"
+    return language_model.generate(prompts=[combined_input], max_tokens=2000).generations[0][0].text
+
+
+def main():
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    llm = OpenAI(api_key=api_key)
+
+    documents = [
+        {'content': "Python 3.8 introduces assignment expressions.", 'timestamp': datetime.datetime(2019, 10, 14)},
+        {'content': "Python 3.9 adds dictionary union operators.", 'timestamp': datetime.datetime(2020, 10, 5)},
+        # More documents with their release dates
+    ]
+
+    retriever = TimeSensitiveRetriever(documents)
+
+    query = "features of Python"
+    response = generate_response_with_recent_info(query, retriever, llm)
+
+    print("Response with Recent Information:", response)
+
+
+
+main()
+
+
+```
+
+#### Practical: Contextual Understanding and Relevance Matching
+
+**Objective**: RAG systems must excel at understanding the context of a query and retrieving information that is contextually relevant, not just keyword-based. Advanced natural language processing (NLP) techniques like semantic search can be crucial.
+
+**Environment Setup**:
+- Python environment with Langchain installed.
+- Access to OpenAI API.
+
+**Example: Contextual Understanding and Relevance Matching**
+
+
+```python
+import re
+
+# Sample Documents
+documents = [
+    "Python is a widely used high-level programming language, known for its simplicity.",
+    "The python snake is a large non-venomous snake found in Africa, Asia, and Australia.",
+    "Machine learning involves training algorithms to make predictions or decisions, using data."
+]
+
+
+# Function for Good Relevance Matching (Contextual)
+def good_relevance_match(query_text):
+    query_lower = query_text.lower()
+
+    # Enhanced semantic understanding
+    if "programming" in query_lower or "language" in query_lower:
+        relevant_docs = [doc for doc in documents if "programming" in doc]
+    elif "snake" in query_lower or "wildlife" in query_lower or "african" in query_lower:
+        relevant_docs = [doc for doc in documents if "python snake" in doc.lower()]
+    else:
+        relevant_docs = []
+
+    return relevant_docs if relevant_docs else ["No relevant document found."]
+
+
+# Function for Bad Relevance Matching (Keyword-based)
+def bad_relevance_match(query_text):
+    query_keywords = set(re.findall(r'\b\w+\b', query_text.lower()))
+    relevant_docs = [doc for doc in documents if query_keywords & set(re.findall(r'\b\w+\b', doc.lower()))]
+
+    return relevant_docs if relevant_docs else ["No relevant document found."]
+
+
+# Test the functions
+def run_matching_functions():
+    queries = ["Python programming features", "African python snake"]
+
+    print("Good Relevance Matching Results:")
+    for query in queries:
+        print(f"Query: {query}")
+        print(good_relevance_match(query), "\n")
+
+    print("Bad Relevance Matching Results:")
+    for query in queries:
+        print(f"Query: {query}")
+        print(bad_relevance_match(query), "\n")
+
+
+def main():
+    run_matching_functions()
+
+
+main()
+
+```
+
+
 ---
 
 ### Module 10: Course Project - Building a RAG-Based Application
