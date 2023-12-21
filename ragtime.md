@@ -289,7 +289,7 @@ def generate_response_with_retrieval(prompt, document_dict, language_model):
     # Retrieve information and generate a response
     retrieved_info = custom_retrieval(prompt, document_dict)
     combined_input = f"Query: {prompt}\nRetrieved Information: {retrieved_info}"
-    return language_model.generate(prompts=[combined_input], max_tokens=100)[0].text
+    return language_model.generate(prompts=[combined_input], max_tokens=1000).generations[0][0].text
 
 def main():
     llm = OpenAI(api_key=api_key)
@@ -402,7 +402,7 @@ def main():
         combined_input = f"Query: {query_text}\n\nContext: {context}"
 
         # Generate response using the language model
-        return language_model.generate(prompts=[combined_input], max_tokens=100)[0].text
+        return language_model.generate(prompts=[combined_input], max_tokens=100).generations[0][0].text
 
     # Example query and response generation
     example_query = "Explain machine learning and its relation to Python."
@@ -484,7 +484,7 @@ def generate_contextual_response(query, data_sources, language_model):
     """
     context_info = context_based_retrieval(query, data_sources)
     combined_input = f"Query: {query}\nContext Info: {context_info}"
-    return language_model.generate(prompts=[combined_input], max_tokens=150)[0].text
+    return language_model.generate(prompts=[combined_input], max_tokens=1000).generations[0][0].text
 
 def main():
     load_dotenv()
@@ -679,57 +679,55 @@ from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
+
 class AdvancedCachedRetriever:
     def __init__(self, large_data_source):
         self.data_source = large_data_source
-        self.cache = {}  # Advanced cache to store complex retrieval results
+        self.cache = {}  # Advanced cache
 
     def efficient_retrieve(self, query):
-        """
-        Efficient retrieval method optimized for handling large datasets.
-        Includes basic caching and more sophisticated data querying.
-        """
         if query in self.cache:
+            print("Cache hit for query:", query)
             return self.cache[query]
 
-        # Simulate complex retrieval from a large dataset
-        # This is a placeholder for more advanced data querying techniques
+        print("Cache miss for query:", query)
+        # Simulate complex retrieval
         retrieved_data = self.data_source.get(query.lower(), "Content not found.")
-        self.cache[query] = retrieved_data
-
+        if retrieved_data != "Content not found.":
+            self.cache[query] = retrieved_data
         return retrieved_data
 
+
 def generate_optimized_response(query, retriever, language_model):
-    """
-    Generates a response using advanced retrieval and ensuring response quality.
-    Includes response filtering and validation.
-    """
     retrieved_content = retriever.efficient_retrieve(query)
-
-    # Implement response quality checks here (e.g., filtering, validation)
-    # Placeholder for more complex logic
-
     combined_input = f"Query: {query}\nRetrieved Info: {retrieved_content}"
-    return language_model.generate(prompts=[combined_input], max_tokens=150)[0].text
+    return language_model.generate(prompts=[combined_input], max_tokens=2000).generations[0][0].text
+
 
 def main():
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY")
     llm = OpenAI(api_key=api_key)
 
-    # Simulating a large-scale data source
     large_data_source = {
-        "python programming": "Python is known for its simplicity and readability.",
-        "machine learning": "Machine learning involves algorithms that can learn from and make predictions on data."
-        # Placeholder for more extensive data
+        "machine learning trends": "The latest trends in machine learning include deep learning, reinforcement "
+                                   "learning, and GANs."
     }
 
     advanced_retriever = AdvancedCachedRetriever(large_data_source)
 
-    query = "What are the latest trends in machine learning?"
-    optimized_response = generate_optimized_response(query, advanced_retriever, llm)
+    query = "machine learning trends"
 
-    print("Optimized RAG Response:", optimized_response)
+    # First query - expected cache miss
+    print("\nQuerying first time (expected cache miss):", query)
+    response_miss = generate_optimized_response(query, advanced_retriever, llm)
+    print("Response:", response_miss)
+
+    # Second query - expected cache hit
+    print("\nQuerying second time (expected cache hit):", query)
+    response_hit = generate_optimized_response(query, advanced_retriever, llm)
+    print("Response (from cache):", response_hit)
+
 
 main()
 
