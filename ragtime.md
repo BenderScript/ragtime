@@ -169,14 +169,6 @@ To aid in visualizing the RAG process, I will create two diagrams:
 1. **Overall Flow of RAG**: This diagram will show the flow from query to response, highlighting the retrieval and generation phases.
 2. **RAG System Architecture**: This diagram will depict the internal components of a RAG model, showcasing how retrieval and generative models are interconnected.
 
-Let's generate these diagrams.
-
-#### Diagram 1: Overall Flow of RAG
-- Description: A flowchart starting with the 'User Query' at the left, leading to 'Retrieval System' which searches a 'Data Repository', followed by 'Generative Model' which combines the query and retrieved data to produce the 'Response'.
-
-#### Diagram 2: RAG System Architecture
-- Description: A system architecture diagram. At the center is the 'RAG Model'. It is connected on the left to 'User Query' and 'Data Repository', and on the right to the 'Generated Response'. Inside the RAG Model, two interconnected components are shown: 'Retrieval System' and 'Generative Model (e.g., GPT-3)'.
-
 ---
 
 ### Module 4: Basics of Langchain
