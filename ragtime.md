@@ -410,9 +410,7 @@ def main():
 
     print("RAG-Like Response:", response)
 
-
-if __name__ == "__main__":
-    main()
+main()
 
 ```
 ---
@@ -439,11 +437,16 @@ if __name__ == "__main__":
 
 #### Practical: Implementing Advanced RAG Applications
 
-**Objective**: To provide hands-on experience with advanced RAG techniques, focusing on customization and optimization using Langchain and OpenAI models.
+**Objective**:  
+The goal is to provide hands-on experience with advanced RAG techniques, particularly focusing on the customization of retrieval sources based on query context. This exercise demonstrates enhancing the relevance and accuracy of responses by tailoring the retrieval process to different query types using Langchain and OpenAI's models.
 
 **Environment Setup**:
-- Python environment with Langchain installed.
-- Access to OpenAI API.
+- Ensure you have a Python environment with Langchain installed.
+- Access to OpenAI's API, secured with an API key.
+
+**Example 1: Customizing Retrieval Sources Based on Query Context**
+
+In this example, you'll develop a system that dynamically selects the most appropriate information source based on the query's context. This simulates advanced RAG systems where the retrieval component understands the context or category of the query to fetch the most relevant information.
 
 **Example 1: Customizing Retrieval Sources**
 
@@ -452,48 +455,65 @@ from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
-# Load environment variables
-load_dotenv()
-
-# Retrieve the API key
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
-
-# Sample documents for custom retrieval logic
-documents = {
-    "quantum computing": "Quantum computing harnesses quantum mechanics to process information in novel ways.",
-    "cybersecurity": "Cybersecurity involves protecting systems and networks from digital attacks."
-}
-
-# Basic custom retrieval function
-def custom_retrieve(query, doc_dict):
-    for key, value in doc_dict.items():
-        if key in query.lower():
-            return value
-    return "Specific information not found."
-
-# Function to generate a response with additional context
-def generate_response_with_custom_context(prompt, doc_dict, language_model):
-    # Retrieve context based on the prompt
-    context = custom_retrieve(prompt, doc_dict)
+def context_based_retrieval(query, data_sources):
+    """
+    Advanced retrieval function that selects a data source based on the query's context.
+    """
+    query_context = analyze_query_context(query)
     
-    # Combine the prompt with the retrieved context
-    combined_input = f"{prompt}\n\nContext: {context}"
-    
-    # Generate response using the language model
-    return language_model.generate(prompts=[combined_input])
+    selected_source = data_sources.get(query_context, "general")
+    retrieved_info = selected_source.get(query, "Specific information not found.")
+
+    return retrieved_info
+
+def analyze_query_context(query):
+    """
+    Function to analyze the context of the query and decide which data source to use.
+    """
+    # Simulate context analysis logic
+    if "history" in query.lower():
+        return "historical"
+    elif "current" in query.lower():
+        return "current_events"
+    else:
+        return "general"
+
+def generate_contextual_response(query, data_sources, language_model):
+    """
+    Generates a response using context-based retrieval and a language model.
+    """
+    context_info = context_based_retrieval(query, data_sources)
+    combined_input = f"Query: {query}\nContext Info: {context_info}"
+    return language_model.generate(prompts=[combined_input], max_tokens=150)[0].text
 
 def main():
-    # Generate a response
-    prompt = "What is the impact of quantum computing on cybersecurity?"
-    response = generate_response_with_custom_context(prompt, documents, llm)
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    llm = OpenAI(api_key=api_key)
 
-    print("Response with Custom Context:", response)
+    # Different data sources for different contexts
+    data_sources = {
+        "historical": {
+            "world war": "World War II was a global war that lasted from 1939 to 1945.",
+            # Add more historical data
+        },
+        "current_events": {
+            "technology trends": "Current technology trends include AI, blockchain, and renewable energy.",
+            # Add more current event data
+        },
+        "general": {
+            # General information
+        }
+    }
+
+    query = "What are the key technology trends?"
+    response = generate_contextual_response(query, data_sources, llm)
+
+    print("Contextual Response:", response)
 
 
 main()
+
 
 ```
 
@@ -504,44 +524,47 @@ from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
-# Load environment variables
-load_dotenv()
-
-# Retrieve the API key
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
-
-# Sample documents for basic retrieval logic
-documents = {
-    "renewable energy": "Renewable energy is energy from sources that are naturally replenishing.",
-    "solar power": "Solar power is energy from the sun that is converted into thermal or electrical energy."
-}
-
-# Basic retrieval function
-def retrieve(query, doc_dict):
-    for key, value in doc_dict.items():
+# Function simulating retrieval from a primary source
+def primary_retrieve(query, primary_source):
+    for key, content in primary_source.items():
         if key in query.lower():
-            return value
-    return "Information not found."
+            return content
+    return "Primary source info not found."
 
-# Function to enhance response with retrieved information
-def generate_response_with_context(prompt, doc_dict, language_model):
-    # Retrieve context based on the prompt
-    context = retrieve(prompt, doc_dict)
+# Function simulating retrieval from a secondary source
+def secondary_retrieve(query, secondary_source):
+    for key, content in secondary_source.items():
+        if key in query.lower():
+            return content
+    return "Secondary source info not found."
+
+# Function to generate a response combining multiple retrievals
+def generate_response_with_multiple_retrievals(prompt, primary_source, secondary_source, language_model):
+    primary_info = primary_retrieve(prompt, primary_source)
+    secondary_info = secondary_retrieve(prompt, secondary_source)
     
-    # Generate response using the language model
-    combined_input = f"{prompt}\n\nContext: {context}"
-    return language_model.generate(prompts=[combined_input])
-
+    combined_input = f"Query: {prompt}\nPrimary Info: {primary_info}\nSecondary Info: {secondary_info}"
+    # Assuming a fine-tuned model for the domain of renewable energy
+    return language_model.generate(prompts=[combined_input], max_tokens=200)[0].text
 
 def main():
-    # Generate a response
-    prompt = "Tell me about solar power and its benefits."
-    response = generate_response_with_context(prompt, documents, llm)
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    llm = OpenAI(api_key=api_key)
 
-    print("Response with Context:", response)
+    # Simulating two different data sources
+    primary_data_source = {
+        "renewable energy": "Renewable energy comes from sources like wind and solar power.",
+        "solar power": "Solar power converts sunlight into electricity."
+    }
+    secondary_data_source = {
+        "environmental impact": "Renewable energy sources have a lower environmental impact compared to fossil fuels."
+    }
+
+    prompt = "Discuss renewable energy and its environmental impact."
+    response = generate_response_with_multiple_retrievals(prompt, primary_data_source, secondary_data_source, llm)
+
+    print("Response with Multiple Retrieval Systems:", response)
 
 
 main()
@@ -570,65 +593,53 @@ main()
 5. **Educational Tools and Research**:
    - Utilizing RAG for educational purposes, such as creating study guides or research aids that can pull in relevant information from a wide array of sources.
 
-#### Practical: Building a Simple RAG-Like System for Content Summarization
+#### Practical: Advanced RAG System for Educational Tools
 
-**Objective**: To create a simplified RAG-like system using Langchain and OpenAI's models for the purpose of content summarization.
+**Objective**:  
 
-**Environment Setup**:
-- Python environment with Langchain installed.
-- Access to OpenAI API.
-
-**Example: Simple Content Summarization System**
+Develop a more complex RAG-like system using Langchain and OpenAI's models, aimed at creating educational content. This system will retrieve information from various sources and summarize it to form study guides on given topics.
 
 ```python
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
-# Load environment variables
-load_dotenv()
-
-# Retrieve the API key
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
-
-# A basic retrieval function (simulating a simplistic retrieval system)
-def retrieve_content(topic, content_db):
-    for content in content_db:
+def advanced_retrieve_and_summarize(topic, source_dict, language_model):
+    """
+    Retrieves information from multiple sources and uses a language model to create a summarized study guide.
+    """
+    combined_content = ""
+    for source, content in source_dict.items():
         if topic.lower() in content.lower():
-            return content
-    return "Content not found."
-
-# Function to summarize content on a given topic
-def summarize_content(topic, content_database, language_model):
-    # Retrieve related content
-    content = retrieve_content(topic, content_database)
+            combined_content += f"From {source}: {content}\n\n"
     
-    # Check if content was found
-    if content == "Content not found.":
-        return content
+    if not combined_content:
+        return "No relevant information found for this topic."
 
-    # Generate a summary using the language model
-    summary_prompt = f"Summarize the following content: {content}"
-    return language_model.generate(prompts=[summary_prompt])
+    summary_prompt = f"Create a study guide on the topic '{topic}' based on the following information:\n\n{combined_content}"
+    return language_model.generate(prompts=[summary_prompt], max_tokens=300)[0].text
 
 def main():
-    # Sample content database
-    content_db = [
-        "Python is a high-level, interpreted programming language with dynamic semantics.",
-        "Machine learning is an application of artificial intelligence that provides systems the ability to automatically learn."
-    ]
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    llm = OpenAI(api_key=api_key)
 
-    # Generate a summary
-    topic = "Python"
-    summary = summarize_content(topic, content_db, llm)
+    # Simulating a database with content from various sources
+    content_sources = {
+        "Source 1": "Python is known for its simplicity and readability.",
+        "Source 2": "Python supports multiple programming paradigms.",
+        "Source 3": "Python is widely used in scientific and numerical computing."
+        # Additional sources and content can be added here
+    }
 
-    print("Content Summary:", summary)
+    topic = "Python programming"
+    study_guide = advanced_retrieve_and_summarize(topic, content_sources, llm)
+
+    print("Generated Study Guide:", study_guide)
 
 
 main()
+
 
 ```
 
@@ -655,73 +666,73 @@ main()
 
 #### Practical: Implementing Optimization Techniques in a RAG-Like System
 
-**Objective**: To demonstrate basic optimization techniques for a simplified RAG-like system using Langchain and OpenAI's models.
+**Objective**: Implement a RAG-like system using Langchain and OpenAI's models that demonstrates advanced optimization techniques. This example will focus on efficient data handling, scalable architecture, and improving the quality of responses.
 
 **Environment Setup**:
 - Python environment with Langchain installed.
 - Access to OpenAI API.
 
-**Example: Optimized Content Retrieval and Generation System**
+**Example: Advanced Optimized RAG System for Large-Scale Data**
 
 ```python
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
-# Load environment variables
-load_dotenv()
+class AdvancedCachedRetriever:
+    def __init__(self, large_data_source):
+        self.data_source = large_data_source
+        self.cache = {}  # Advanced cache to store complex retrieval results
 
-# Retrieve the API key
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize OpenAI's language model with the API key
-llm = OpenAI(api_key=api_key)
-
-
-class CachedRetriever:
-    def __init__(self, documents):
-        self.documents = documents
-        self.cache = {}  # Cache to store retrieval results
-
-    def retrieve(self, query):
+    def efficient_retrieve(self, query):
+        """
+        Efficient retrieval method optimized for handling large datasets.
+        Includes basic caching and more sophisticated data querying.
+        """
         if query in self.cache:
             return self.cache[query]
 
-        for doc in self.documents:
-            if query.lower() in doc.lower():
-                self.cache[query] = doc
-                return doc
+        # Simulate complex retrieval from a large dataset
+        # This is a placeholder for more advanced data querying techniques
+        retrieved_data = self.data_source.get(query.lower(), "Content not found.")
+        self.cache[query] = retrieved_data
 
-        self.cache[query] = "Content not found."
-        return "Content not found."
+        return retrieved_data
 
+def generate_optimized_response(query, retriever, language_model):
+    """
+    Generates a response using advanced retrieval and ensuring response quality.
+    Includes response filtering and validation.
+    """
+    retrieved_content = retriever.efficient_retrieve(query)
 
-def generate_response(topic, retriever, llm):
-    content = retriever.retrieve(topic)
+    # Implement response quality checks here (e.g., filtering, validation)
+    # Placeholder for more complex logic
 
-    if content == "Content not found.":
-        return content
-
-    response_prompt = f"Discuss the following topic: {content}"
-    # Adjusted to use a hypothetical 'generate' method
-    return llm.generate(prompts=[response_prompt], max_tokens=50)
-
+    combined_input = f"Query: {query}\nRetrieved Info: {retrieved_content}"
+    return language_model.generate(prompts=[combined_input], max_tokens=150)[0].text
 
 def main():
-    content_db = [
-        "Python is a widely-used programming language.",
-        "Machine learning enables computers to learn from data."
-    ]
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    llm = OpenAI(api_key=api_key)
 
-    cached_retriever = CachedRetriever(content_db)
+    # Simulating a large-scale data source
+    large_data_source = {
+        "python programming": "Python is known for its simplicity and readability.",
+        "machine learning": "Machine learning involves algorithms that can learn from and make predictions on data."
+        # Placeholder for more extensive data
+    }
 
-    topic = "Python"
-    response = generate_response(topic, cached_retriever, llm)
+    advanced_retriever = AdvancedCachedRetriever(large_data_source)
 
-    print("Generated Response:", response)
+    query = "What are the latest trends in machine learning?"
+    optimized_response = generate_optimized_response(query, advanced_retriever, llm)
 
+    print("Optimized RAG Response:", optimized_response)
 
 main()
+
 ```
 
 ---
