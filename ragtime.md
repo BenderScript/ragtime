@@ -59,7 +59,7 @@ def main():
 
     # Example text generation
     prompt = "Write a short story about Bender from Futurama in first person using his language and mannerisms"
-    print("Generated Text:", generate_text(prompt, llm))
+    print("Generated Text:", generate_text(prompt, llm).generations[0][0].text)
 
 
 main()
@@ -402,7 +402,7 @@ def main():
         combined_input = f"Query: {query_text}\n\nContext: {context}"
 
         # Generate response using the language model
-        return language_model.generate(prompts=[combined_input], max_tokens=100).generations[0][0].text
+        return language_model.generate(prompts=[combined_input], max_tokens=1000).generations[0][0].text
 
     # Example query and response generation
     example_query = "Explain machine learning and its relation to Python."
@@ -545,7 +545,7 @@ def generate_response_with_multiple_retrievals(prompt, primary_source, secondary
     
     combined_input = f"Query: {prompt}\nPrimary Info: {primary_info}\nSecondary Info: {secondary_info}"
     # Assuming a fine-tuned model for the domain of renewable energy
-    return language_model.generate(prompts=[combined_input], max_tokens=200)[0].text
+    return language_model.generate(prompts=[combined_input], max_tokens=2000).generations[0][0].text
 
 def main():
     load_dotenv()
