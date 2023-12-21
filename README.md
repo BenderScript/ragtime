@@ -11,14 +11,58 @@ Welcome to the groundbreaking course on Retrieval-Augmented Generation (RAG) usi
 
 ### Course Modules:
 1. **Introduction to Generative AI**
-   - Evolution of AI models
-   - Hands-on: Text generation with OpenAI
-2. **Retrieval Mechanisms in AI**
-   - Delving into retrieval techniques
-   - Practical: Implementing retrieval systems
+   - Explore the history and development of AI models.
+   - Hands-on: Basic text generation using OpenAI.
+
+2. **Understanding Retrieval in AI**
+   - Deep dive into various retrieval techniques.
+   - Practical: Building simple retrieval systems.
+
 3. **RAG Concepts and Applications**
-   - Understanding RAG
-   - Project: Building a RAG application
+   - Unveiling the fundamentals of RAG.
+   - Project: Designing a basic RAG application.
+
+4. **Basics of Langchain**
+   - What is Langchain?
+   - Key Features of Langchain
+   - Practical: Basic Operations with Langchain
+
+5. **Implementing Retrieval with Langchain**
+   - Retrieval in AI Systems
+   - Langchain's Retrieval Tools
+   - Real-World Applications
+   - Practical: Building a Retrieval System using Langchain's Custom Retrieval Logic
+
+6. **Integrating RAG in Langchain**
+   - Modular Approach
+   - Support for Various Language Models
+   - Customizable Retrieval Mechanisms
+   - Project: Implementing a RAG-Like Model Using Langchain
+
+7. **Advanced RAG Techniques in Langchain**
+   - Customizing Retrieval Sources
+   - Fine-Tuning Language Models
+   - Combining Multiple Retrieval Systems
+   - Practical: Implementing Advanced RAG Applications
+
+8. **Real-World Applications and Case Studies**
+   - Search Engines and Information Retrieval
+   - Customer Service Chatbots
+   - Question Answering Systems
+   - Practical: Advanced RAG System for Educational Tools
+
+9. **Best Practices and Optimization for RAG Systems**
+   - Performance Optimization
+   - Handling Large Data Sets
+   - Quality of Responses
+   - Practical: Implementing Caching Optimization Techniques in a RAG-Like System
+   - Practical: Time-Sensitive Retrieval in RAG Systems
+   - Practical: Contextual Understanding and Relevance Matching
+
+10. **Capstone Project**
+    - Bringing together all concepts in a comprehensive RAG application.
+    - Final Project: Building an Advanced Multi-modal RAG-Based Application
+    - Practical: Building an Advanced Multi-modal System
 
 ### Detailed Course Outline
 For a comprehensive overview of the course, check out the [Course Details](ragtime.md).

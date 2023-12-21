@@ -139,7 +139,7 @@ main()
 
 ---
 
-### Module 3 : Detailed Explanation of RAG, Its Components, and How It Combines Retrieval and Generation
+### Module 3 : RAG Concepts and Applications
 
 #### What is Retrieval-Augmented Generation (RAG)?
 
@@ -656,7 +656,7 @@ main()
 5. **Ethical Considerations and Bias Mitigation**:
    - Addressing ethical considerations and mitigating biases in RAG systems, focusing on fairness, transparency, and responsible AI practices.
 
-#### Practical: Implementing Optimization Techniques in a RAG-Like System
+#### Practical: Implementing Caching Optimization Techniques in a RAG-Like System
 
 **Objective**: Implement a RAG-like system using Langchain and OpenAI's models that demonstrates advanced optimization techniques. This example will focus on efficient data handling, scalable architecture, and improving the quality of responses.
 
