@@ -741,20 +741,23 @@ main()
 
 #### Project Overview
 
-**Objective**: To apply the concepts learned throughout the course by building a RAG-based application using Langchain and OpenAI's models. The project will involve creating a simple question-answering system that retrieves information from a set of documents and generates responses to user queries.
+**Objective**: Apply the comprehensive understanding of RAG concepts by building a sophisticated RAG-based application using Langchain and OpenAI's models. The project involves creating an advanced question-answering system that utilizes multiple retrieval methods and integrates these with a generative language model to produce well-informed responses.
 
 **Scope**:
-- Students will design and implement a basic RAG system.
-- The system will use a simple retrieval method combined with OpenAI's language models for generating responses.
-- The project focuses on integrating retrieval and generation processes, demonstrating understanding and practical application of RAG concepts.
 
-#### Practical: Building a Simple Question-Answering System
+- Design and implement an advanced RAG system.
+- Use multiple retrieval methods to fetch information from various sources.
+- Combine retrieved information with OpenAI's language models to generate responses.
+- Demonstrate understanding and practical application of advanced RAG concepts, including performance optimization, handling large data sets, and ensuring response quality.
+
+
+#### Practical: Building an Advanced Question-Answering System
 
 **Environment Setup**:
 - Python environment with Langchain installed.
 - Access to OpenAI API.
 
-**Example: Simple Question-Answering System Using RAG Principles**
+**Example: Advanced Question-Answering System Using RAG Principles**
 
 ```python
 from dotenv import load_dotenv
@@ -771,44 +774,47 @@ def main():
     # Initialize OpenAI's language model with the API key
     llm = OpenAI(api_key=api_key)
 
-    # Sample documents database
-    documents = [
-        "Python is a high-level, interpreted programming language.",
-        "Machine learning is a branch of artificial intelligence that focuses on building systems that learn from data."
-    ]
+    # Advanced retrieval setup
+    primary_documents = {
+        "Python programming": "Python is a versatile language used in various fields.",
+        "Machine learning": "Machine learning involves algorithms and statistical models."
+    }
+    secondary_documents = {
+        "Python applications": "Python is widely used in web development, data analysis, AI, and more.",
+        "AI in machine learning": "AI and machine learning are closely intertwined, with AI providing a broader context."
+    }
 
-    # Initialize the retriever
-    retriever = DocumentRetriever(documents)
+    # Advanced Document Retriever
+    retriever = AdvancedDocumentRetriever(primary_documents, secondary_documents)
 
-    # Example query
-    query = "What is machine learning?"
-    response = answer_query(query, retriever, llm)
+    # Example query and response generation
+    query = "How is Python used in machine learning?"
+    response = answer_complex_query(query, retriever, llm)
 
-    print("Response:", response)
+    print("Advanced Response:", response)
 
-class DocumentRetriever:
-    def __init__(self, document_list):
-        self.documents = document_list
+class AdvancedDocumentRetriever:
+    def __init__(self, primary_docs, secondary_docs):
+        self.primary_docs = primary_docs
+        self.secondary_docs = secondary_docs
 
     def retrieve(self, query):
-        # Simple keyword-based retrieval
-        for doc in self.documents:
-            if query.lower() in doc.lower():
-                return doc
-        return "No relevant document found."
+        # Combine primary and secondary sources for a comprehensive retrieval
+        primary_result = self.primary_docs.get(query, "")
+        secondary_result = self.secondary_docs.get(query, "")
+        return f"{primary_result}\n{secondary_result}".strip()
 
-def answer_query(query, retriever, language_model):
+def answer_complex_query(query, retriever, language_model):
     # Retrieve relevant document
     document = retriever.retrieve(query)
 
-    # If no document is found, return a default response
-    if document == "No relevant document found.":
-        return "I'm sorry, I don't have information on that topic."
+    # If no document is found, provide a default response
+    if not document:
+        return "I'm sorry, I don't have detailed information on that topic."
 
     # Use the language model to generate an answer
     answer_prompt = f"Answer the question based on the following information: {document}\n\nQuestion: {query}"
-    return language_model.generate(prompts=[answer_prompt], max_tokens=150)
-
+    return language_model.generate(prompts=[answer_prompt], max_tokens=200)[0].text
 
 main()
 
