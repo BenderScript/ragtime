@@ -863,7 +863,7 @@ main()
 
 ---
 
-### Module 10: Course Project - Building a RAG-Based Application
+### Module 10: Course Project - Building an Advanced Multi-modal RAG-Based Application
 
 #### Project Overview
 
@@ -876,7 +876,7 @@ main()
 - Combine retrieved information with OpenAI's language models to generate responses.
 - Demonstrate understanding and practical application of advanced RAG concepts, including performance optimization, handling large data sets, and ensuring response quality.
 
-Addind mulk#### Practical: Building an Advanced Multi-modal System
+#### Practical: Building an Advanced Multi-modal System
 
 **Objective**: Create a RAG system that provides comprehensive information about historical events by integrating text descriptions, relevant images, and structured data such as dates and key figures.
 
