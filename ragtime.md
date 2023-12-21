@@ -604,20 +604,23 @@ from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
+
 def advanced_retrieve_and_summarize(topic, source_dict, language_model):
     """
     Retrieves information from multiple sources and uses a language model to create a summarized study guide.
     """
     combined_content = ""
     for source, content in source_dict.items():
-        if topic.lower() in content.lower():
+        # Adjusted to check if the topic is in the source key
+        if topic.lower() in source.lower():
             combined_content += f"From {source}: {content}\n\n"
-    
+
     if not combined_content:
         return "No relevant information found for this topic."
 
     summary_prompt = f"Create a study guide on the topic '{topic}' based on the following information:\n\n{combined_content}"
-    return language_model.generate(prompts=[summary_prompt], max_tokens=300)[0].text
+    return language_model.generate(prompts=[summary_prompt], max_tokens=300).generations[0][0].text
+
 
 def main():
     load_dotenv()
@@ -626,9 +629,9 @@ def main():
 
     # Simulating a database with content from various sources
     content_sources = {
-        "Source 1": "Python is known for its simplicity and readability.",
-        "Source 2": "Python supports multiple programming paradigms.",
-        "Source 3": "Python is widely used in scientific and numerical computing."
+        "Python programming basics": "Python is known for its simplicity and readability.",
+        "Python programming paradigms": "Python supports multiple programming paradigms.",
+        "Python in scientific computing": "Python is widely used in scientific and numerical computing."
         # Additional sources and content can be added here
     }
 
@@ -637,12 +640,9 @@ def main():
 
     print("Generated Study Guide:", study_guide)
 
-
 main()
 
-
 ```
-
 ---
 
 ### Module 9: Best Practices and Optimization for RAG Systems
@@ -762,17 +762,38 @@ from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
 
+
+class AdvancedDocumentRetriever:
+    def __init__(self, primary_docs, secondary_docs):
+        self.primary_docs = primary_docs
+        self.secondary_docs = secondary_docs
+
+    def retrieve(self, query):
+        # Improved retrieval for partial matches or keywords
+        combined_content = ""
+        for docs in [self.primary_docs, self.secondary_docs]:
+            for key, content in docs.items():
+                if any(word in query.lower() for word in key.lower().split()):
+                    combined_content += f"{content}\n"
+        return combined_content.strip() if combined_content else "Content not found."
+
+
+def answer_complex_query(query, retriever, language_model):
+    # Retrieve relevant document
+    document = retriever.retrieve(query)
+
+    if document == "Content not found.":
+        return "I'm sorry, I don't have detailed information on that topic."
+
+    answer_prompt = f"Answer the question based on the following information: {document}\n\nQuestion: {query}"
+    return language_model.generate(prompts=[answer_prompt], max_tokens=200).generations[0][0].text
+
+
 def main():
-    # Load environment variables
     load_dotenv()
-
-    # Retrieve the API key
     api_key = os.getenv("OPENAI_API_KEY")
-
-    # Initialize OpenAI's language model with the API key
     llm = OpenAI(api_key=api_key)
 
-    # Advanced retrieval setup
     primary_documents = {
         "Python programming": "Python is a versatile language used in various fields.",
         "Machine learning": "Machine learning involves algorithms and statistical models."
@@ -782,38 +803,14 @@ def main():
         "AI in machine learning": "AI and machine learning are closely intertwined, with AI providing a broader context."
     }
 
-    # Advanced Document Retriever
     retriever = AdvancedDocumentRetriever(primary_documents, secondary_documents)
 
-    # Example query and response generation
     query = "How is Python used in machine learning?"
     response = answer_complex_query(query, retriever, llm)
 
     print("Advanced Response:", response)
 
-class AdvancedDocumentRetriever:
-    def __init__(self, primary_docs, secondary_docs):
-        self.primary_docs = primary_docs
-        self.secondary_docs = secondary_docs
-
-    def retrieve(self, query):
-        # Combine primary and secondary sources for a comprehensive retrieval
-        primary_result = self.primary_docs.get(query, "")
-        secondary_result = self.secondary_docs.get(query, "")
-        return f"{primary_result}\n{secondary_result}".strip()
-
-def answer_complex_query(query, retriever, language_model):
-    # Retrieve relevant document
-    document = retriever.retrieve(query)
-
-    # If no document is found, provide a default response
-    if not document:
-        return "I'm sorry, I don't have detailed information on that topic."
-
-    # Use the language model to generate an answer
-    answer_prompt = f"Answer the question based on the following information: {document}\n\nQuestion: {query}"
-    return language_model.generate(prompts=[answer_prompt], max_tokens=200)[0].text
-
 main()
+
 
 ```
