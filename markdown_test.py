@@ -7,7 +7,10 @@ from autopep8 import fix_code
 
 # Function to extract code blocks from Markdown
 def extract_code_blocks(markdown_text):
-    code_blocks = re.findall(r'```python\n(.*?)\n```', markdown_text, re.DOTALL)
+    # Updated regular expression
+    # This regular expression looks for ```python followed by a newline and #Extract,
+    # then captures everything until the closing ```
+    code_blocks = re.findall(r'```python\n#Extract\n(.*?)\n```', markdown_text, re.DOTALL)
     return code_blocks
 
 

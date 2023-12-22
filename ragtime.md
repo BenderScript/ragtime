@@ -37,6 +37,7 @@ This course introduces Retrieval-Augmented Generation (RAG) using Langchain, ble
 **Example: Generating Text with OpenAI's GPT Model**
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -111,6 +112,7 @@ Each of these systems uses different algorithms and techniques tailored to their
 - Simple Python script for basic information retrieval.
 
 ```python
+#Extract
 # Simple Python script for basic information retrieval
 # Here, we use a fixed list of documents for simplicity
 
@@ -211,6 +213,7 @@ To aid in visualizing the RAG process, I will create two diagrams:
 **Code Example**:
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -273,6 +276,7 @@ main()
 **Example: Custom Retrieval System with Language Model Integration**
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -395,6 +399,7 @@ main()
 **Objective**: In this practical example, we'll simulate a RAG system where the retrieval process is based on matching the context and content of a query to a set of documents. We'll then use this retrieved context to inform the generation of a response from the language model.
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -520,6 +525,7 @@ In this example, you'll develop a system that dynamically selects the most appro
 **Example 1: Customizing Retrieval Sources**
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -589,6 +595,7 @@ main()
 **Example 2: Integrating Multiple Retrieval Systems**
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -679,6 +686,7 @@ main()
 Develop a more complex RAG-like system using Langchain and OpenAI's models, aimed at creating educational content. This system will retrieve information from various sources and summarize it to form study guides on given topics.
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -754,6 +762,7 @@ main()
 **Example: Advanced Optimized RAG System for Large-Scale Data**
 
 ```python
+#Extract
 from dotenv import load_dotenv
 import os
 from langchain.llms import OpenAI
@@ -823,6 +832,7 @@ main()
 **Example: Optimized Time-Sensitive Retrieval in RAG System**
 
 ```python
+#Extract
 import datetime
 from dotenv import load_dotenv
 import os
@@ -891,6 +901,7 @@ main()
 
 
 ```python
+#Extract
 import re
 
 # Sample Documents
@@ -974,6 +985,7 @@ main()
 **Example: Multimodal Historical Event Explorer**
 
 ```python
+#Extract
 import os
 import requests
 from PIL import Image, UnidentifiedImageError
