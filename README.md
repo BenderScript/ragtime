@@ -4,6 +4,9 @@
 
 Welcome to the groundbreaking course on Retrieval-Augmented Generation (RAG) using Langchain! This course is your gateway to mastering the innovative blend of generative AI and information retrieval, powering the next wave of AI applications.
 
+"Just show me the money!"
+It is here: [Course Details](ragtime.md).
+
 ### What Will You Learn?
 - **Theoretical Foundations**: Understand the evolution and mechanics of generative AI models.
 - **Practical Skills**: Get hands-on with Langchain and OpenAI's language models to create cutting-edge RAG applications.
